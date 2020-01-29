@@ -16,12 +16,12 @@ const UIController = (() => {
     }
 
     return {
-        getInput: function(){
+        getInput: () => {
             return {
                 type: document.querySelector(DOMstrings.inputType).value,// Will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
                 value: document.querySelector(DOMstrings.inputValue).value
-            }   
+            }
         },
 
         getDOMstrings: () => {
@@ -35,14 +35,23 @@ const UIController = (() => {
 // GLOBAL APP CONTROLER
 const controller = ((budgetCtrl, UICtrl) => {
 
-    const DOM = UICtrl.getDOMstrings();
+    const setupEventListeners = () => {
+        const DOM = UICtrl.getDOMstrings();
+
+        document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+
+        document.addEventListener('keypress', (event) => {
+            if (event.keyCode === 13 || event.which === 13) {
+                ctrlAddItem();
+            }
+        });
+
+    };
 
     const ctrlAddItem = () => {
 
         //  1. Get the filed input data
-
         const input = UICtrl.getInput();
-        console.log(input);
 
         // 2. Add the item to the budget controller
 
@@ -54,16 +63,13 @@ const controller = ((budgetCtrl, UICtrl) => {
 
     };
 
-    document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
-
-    document.addEventListener('keypress', (event) => {
-
-        if (event.keyCode === 13 || event.which === 13) {
-            ctrlAddItem();        
+    return {
+        init: () => {
+            console.log('Application has started.');
+            setupEventListeners();
         }
-
-        
-
-    });
+    }
 
 })(budgetController, UIController);
+
+controller.init();
