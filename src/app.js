@@ -104,7 +104,8 @@ const UIController = (() => {
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
     }
 
     return {
@@ -124,7 +125,7 @@ const UIController = (() => {
             if (type === 'inc') {
                 element = DOMstrings.incomeContainer;
                 html = `
-                <div class="item clearfix" id="income-${obj.id}">
+                <div class="item clearfix" id="inc-${obj.id}">
                     <div class="item__description">${obj.description}</div>
                     <div class="right clearfix">
                         <div class="item__value">${obj.value}</div>
@@ -137,7 +138,7 @@ const UIController = (() => {
                 element = DOMstrings.expensesContainer;
 
                 html = `                        
-                <div class="item clearfix" id="income-${obj.id}">
+                <div class="item clearfix" id="exp-${obj.id}">
                     <div class="item__description">${obj.description}</div>
                     <div class="right clearfix">
                         <div class="item__value">${obj.value}</div>
@@ -200,6 +201,8 @@ const controller = ((budgetCtrl, UICtrl) => {
             }
         });
 
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
     };
 
     const updateBudget = () => {
@@ -232,6 +235,25 @@ const controller = ((budgetCtrl, UICtrl) => {
             // 5. Calculate and update the budget
             updateBudget();
         }
+    };
+
+    const ctrlDeleteItem = (event) => {
+
+        const itemId = event.target.parentNode.parentNode.parentNode.parentNode.id;
+
+        if (itemId) {
+            //Pattern: inc-1 / exp-1
+            const splitId = itemId.split('-');
+            const type = splitId[0];
+            const ID = splitId[1];
+
+            // 1. Delete the item from the data structue
+
+            // 2. Delete the item from the UI
+
+            // 3. Update and show the new budget
+        }
+
     };
 
     return {
