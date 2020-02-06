@@ -105,7 +105,7 @@ const budgetController = (() => {
         calculatePercentages: () => {
             data.allItems.exp.forEach((cur) => {
                 cur.calcPercentage(data.totals.inc, cur.value);
-             });
+            });
         },
 
         getPercentages: () => {
@@ -145,7 +145,8 @@ const UIController = (() => {
         incomeLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
-        container: '.container'
+        container: '.container',
+        expensesPercLabel: '.item__percentage'
     }
 
     return {
@@ -182,6 +183,7 @@ const UIController = (() => {
                     <div class="item__description">${obj.description}</div>
                     <div class="right clearfix">
                         <div class="item__value">${obj.value}</div>
+                        <div class="item__percentage"></div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                         </div>
@@ -226,6 +228,25 @@ const UIController = (() => {
             }
         },
 
+        displayPercentages: (percantages) => {
+            
+            const fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
+
+            const nodeListForEach = (list, callback) => {
+                for (let i = 0; i < list.length; i++) {
+                    callback(list[i], i);
+                }
+            };
+
+            nodeListForEach(fields, (current, index) => {
+                if (percantages[index] > 0) {
+                    current.textContent = percantages[index] + '%';
+                } else {
+                    current.textContent = '---';
+                }
+            });
+        },
+
         getDOMstrings: () => {
             return DOMstrings;
         }
@@ -256,12 +277,12 @@ const controller = ((budgetCtrl, UICtrl) => {
 
         // 1. Calculate percentages
         budgetCtrl.calculatePercentages();
-        
+
         // 2. Read percentages from the budget controller
         var percentages = budgetCtrl.getPercentages();
-        
+
         // 3. Update the UI with the new percentages
-        console.log(percentages);
+        UICtrl.displayPercentages(percentages);
 
     }
 
