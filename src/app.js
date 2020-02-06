@@ -5,7 +5,21 @@ const budgetController = (() => {
         this.id = id;
         this.description = description;
         this.value = value;
+        this.percentage = -1;
     };
+
+    Expense.prototype.calcPercentage = (totalIncome, val) => {
+        // I have taken value from argument, because sth is bugged and this.value is undefined
+        if (totalIncome > 0) {
+            this.percentage = Math.round((val / totalIncome) * 100);
+        } else {
+            this.percentage = -1;
+        }
+    };
+
+    Expense.prototype.getPercentage = () => {
+        return this.percentage;
+    }
 
     const Income = function (id, description, value) {
         this.id = id;
@@ -42,7 +56,6 @@ const budgetController = (() => {
             } else {
                 ID = 0;
             }
-
 
             // Create new item based on 'inc' or 'exp' type
             if (type === 'exp') {
@@ -87,6 +100,19 @@ const budgetController = (() => {
             } else {
                 data.percantage = -1;
             }
+        },
+
+        calculatePercentages: () => {
+            data.allItems.exp.forEach((cur) => {
+                cur.calcPercentage(data.totals.inc, cur.value);
+             });
+        },
+
+        getPercentages: () => {
+            const allPerc = data.allItems.exp.map((cur) => {
+                return cur.getPercentage();
+            });
+            return allPerc;
         },
 
         getBudget: () => {
@@ -226,6 +252,19 @@ const controller = ((budgetCtrl, UICtrl) => {
 
     };
 
+    const updatePercentages = () => {
+
+        // 1. Calculate percentages
+        budgetCtrl.calculatePercentages();
+        
+        // 2. Read percentages from the budget controller
+        var percentages = budgetCtrl.getPercentages();
+        
+        // 3. Update the UI with the new percentages
+        console.log(percentages);
+
+    }
+
     const updateBudget = () => {
 
         // 1. Calculate budget
@@ -255,6 +294,9 @@ const controller = ((budgetCtrl, UICtrl) => {
 
             // 5. Calculate and update the budget
             updateBudget();
+
+            // 6. Calculate and update percentages
+            updatePercentages();
         }
     };
 
@@ -276,6 +318,9 @@ const controller = ((budgetCtrl, UICtrl) => {
 
             // 3. Update and show the new budget
             updateBudget();
+
+            //4. Calculate and update percentages
+            updatePercentages();
         }
     };
 
