@@ -149,6 +149,32 @@ const UIController = (() => {
         expensesPercLabel: '.item__percentage'
     }
 
+    const formatNumber = (num, type) => {
+
+        /* RULES
+         * + or - before number
+         * exactly 2 decimal points
+         * coma separaitin
+         * 
+         * 2310.4595 => + 2,310.46
+         * 2000 => 2,000.00
+        */
+
+        num = Math.abs(num);
+        num = num.toFixed(2);
+
+        const numSplit = num.split('.');
+
+        let int = numSplit[0];
+        if(int.length > 3) {
+            int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, int.length);
+        }
+
+        const dec = numSplit[1];
+
+        return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+    };
+
     return {
         getInput: () => {
             return {
@@ -169,7 +195,7 @@ const UIController = (() => {
                 <div class="item clearfix" id="inc-${obj.id}">
                     <div class="item__description">${obj.description}</div>
                     <div class="right clearfix">
-                        <div class="item__value">${obj.value}</div>
+                        <div class="item__value">${formatNumber(obj.value, type)}</div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                         </div>
@@ -182,7 +208,7 @@ const UIController = (() => {
                 <div class="item clearfix" id="exp-${obj.id}">
                     <div class="item__description">${obj.description}</div>
                     <div class="right clearfix">
-                        <div class="item__value">${obj.value}</div>
+                        <div class="item__value">${formatNumber(obj.value, type)}</div>
                         <div class="item__percentage"></div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
@@ -356,7 +382,7 @@ const controller = ((budgetCtrl, UICtrl) => {
             });
             setupEventListeners();
         }
-    }
+    } 
 
 })(budgetController, UIController);
 
