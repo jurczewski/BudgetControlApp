@@ -146,8 +146,9 @@ const UIController = (() => {
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        expensesPercLabel: '.item__percentage'
-    }
+        expensesPercLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
+    };
 
     const formatNumber = (num, type) => {
 
@@ -166,7 +167,7 @@ const UIController = (() => {
         const numSplit = num.split('.');
 
         let int = numSplit[0];
-        if(int.length > 3) {
+        if (int.length > 3) {
             int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, int.length);
         }
 
@@ -257,7 +258,7 @@ const UIController = (() => {
         },
 
         displayPercentages: (percantages) => {
-            
+
             const fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
             const nodeListForEach = (list, callback) => {
@@ -273,6 +274,14 @@ const UIController = (() => {
                     current.textContent = '---';
                 }
             });
+        },
+
+        displayMonth: () => {
+            const now = new Date();
+
+            const year = now.getFullYear();
+            const month = now.toLocaleString('en-us', { month: 'long' });
+            document.querySelector(DOMstrings.dateLabel).textContent = month + ' ' + year;
         },
 
         getDOMstrings: () => {
@@ -376,6 +385,7 @@ const controller = ((budgetCtrl, UICtrl) => {
     return {
         init: () => {
             console.log('Application has started.');
+            UICtrl.displayMonth();
             UICtrl.displayBudget({
                 budget: 0,
                 totalInc: 0,
@@ -384,7 +394,7 @@ const controller = ((budgetCtrl, UICtrl) => {
             });
             setupEventListeners();
         }
-    } 
+    }
 
 })(budgetController, UIController);
 
